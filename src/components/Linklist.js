@@ -27,15 +27,14 @@ const FEED_QUERY = gql`
 `
 
 export default class Linklist extends PureComponent {
+  _updateCacheAfterVote = (store, createdVote, linkId) => {
+    const data = store.readQuery({ query: FEED_QUERY })
 
-	_updateCacheAfterVote = (store, createdVote, linkId) => {
-		const data = store.readQuery({ query: FEED_QUERY })
-		
-		const votedLink = data.feed.links.find(link => link.id === linkId)
-		votedLink.votes = createdVote.link.votes
+    const votedLink = data.feed.links.find((link) => link.id === linkId)
+    votedLink.votes = createdVote.link.votes
 
-		store.writeQuery({ query: FEED_QUERY, data })
-	}
+    store.writeQuery({ query: FEED_QUERY, data })
+  }
 
   render() {
     return (
@@ -47,7 +46,7 @@ export default class Linklist extends PureComponent {
           return (
             <div>
               {linklist.map((link, index) => (
-                <Link key={link.id} link={link} index={index} />
+                <Link key={link.id} link={link} index={index} updateStoreAfterVote={this._updateCacheAfterVote} />
               ))}
             </div>
           )
